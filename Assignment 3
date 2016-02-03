@@ -1,0 +1,68 @@
+import ccm      
+log=ccm.log(html=True)   
+
+from ccm.lib.actr import *  
+
+class Pizzeria(ccm.Model):        
+    crust=ccm.Model(isa='crust',location='on_table')
+    tomato_sauce=ccm.Model(isa='toamto_sauce',location='on_table')
+    pepperoni=ccm.Model(isa='pepperoni',location='on_table')
+    cheese=ccm.Model(isa='cheese',location='on_table')
+
+class MotorModule(ccm.Model):      
+    def do_crust(self):           
+        yield 2                   
+        print "do the crust"
+        self.parent.parent.crust.location='on_stone'
+    def do_toamto_sauce(self):     
+        yield 2                   
+        print "do the tomato sauce"
+        self.parent.parent.tomato_sauce.location='on_stone'
+    def do_pepperoni(self):     
+        yield 2
+        print "do the pepperoni"
+        self.parent.parent.pepperoni.location='on_stone'
+    def do_cheese(self):     
+        yield 2
+        print "do the cheese"
+        self.parent.parent.cheese.location='on_stone'
+        
+class MyAgent(ACTR):    
+    focus=Buffer()
+    motor=MotorModule()
+
+    def init():
+        focus.set('pizza crust')
+
+    def crust(focus='pizza crust'):
+        print "I have a pizza crust"     
+        focus.set('pizza tomato sauce')
+        motor.do_crust()                 
+
+    def tomato_sauce(focus='pizza tomato sauce', crust='location:on_stone'):  
+        print "I have tomato sauce"                         
+        focus.set('pizza pepperoni')                                    
+        motor.do_tomato_sauce()                                     
+
+    def pepperoni(focus='pizza pepperoni', cheese='location:on_stone'):       
+        print "I have pepperoni"
+        focus.set('pizza cheese')
+        motor.do_pepperoni()
+
+    def cheese(focus='pizza cheese', ham='location:on_stone'):
+        print "I have cheese"
+        focus.set('stop')
+        motor.do_cheese()
+
+    def stop_production(focus='stop', cheese='location:on_stone'): 
+        print "I have made a pepperoni pizza"
+        self.stop()
+
+
+gino=MyAgent()
+env=pizzeria()
+env.agent=gino 
+ccm.log_everything(env)
+
+env.run()
+ccm.finished()
