@@ -1,0 +1,59 @@
+import ccm      
+log=ccm.log()   
+
+from ccm.lib.actr import *  
+
+class MyEnvironment(ccm.Model):
+    pass
+
+class MyAgent(ACTR):
+	
+    focus=Buffer()
+    
+    DMbuffer=Buffer()
+    
+    DM=Memory(DMbuffer)                            
+
+    DM.add('topping:mushrooms')
+    
+    focus.set('pizza crust')
+        
+    def crust(focus='pizza crust'):   
+        print "I have a pizza crust"         
+        focus.set('tomato sauce')    
+
+    def sauce(focus='tomato sauce'):        
+        print "I have put tomato sauce on the crust"  
+        focus.set('pepperoni')
+
+    def pepperoni(focus='pepperoni'):
+        print "I have put pepperoni on the sauce"
+        focus.set('get_topping')
+
+    def topping(focus='get_topping'):
+        print "recalling the order"
+        DM.request('topping:?')
+        
+        focus.set('pizza topping')    
+
+    def order(focus='pizza topping', DMbuffer='topping:?topping'):
+	print "I recall they wanted......."                                 
+        print topping             
+        print "i have put the topping on the pizza"
+        focus.set('cheese')
+
+    def cheese(focus='cheese'):
+        print "I have put the cheese on the pizza"
+        print "I have made a pepperoni pizza"
+        focus.set('stop')   
+
+    def stop_production(focus='stop'):
+        self.stop()
+
+gino=MyAgent()
+pizzeria=MyEnvironment()
+pizzeria.agent=gino
+ccm.log_everything(pizzeria)
+
+pizzeria.run()
+ccm.finished()
