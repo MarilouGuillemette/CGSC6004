@@ -1,0 +1,114 @@
+import ccm      
+log=ccm.log(html=True)   
+
+from ccm.lib.actr import *  
+ 
+class Pizzeria(ccm.Model):        
+    crust=ccm.Model(isa='crust',location='on_table')
+    sauce=ccm.Model(isa='sauce',location='on_table')
+    pepperoni=ccm.Model(isa='pepperoni',location='on_table')
+    mozzarella=ccm.Model(isa='mozzarella',location='on_table')
+ 
+    mario_voice=ccm.Model(isa='voice',state='silent')     
+    gino_location=ccm.Model(isa='location', state='Pizzeria', x='2', y='4')
+
+class MotorModule(ccm.Model):      
+    def do_crust(self):           
+        yield 2                   
+        print "do the crust"
+        self.parent.parent.crust.location='on_stone'
+    def do_sauce(self):     
+        yield 2                   
+        print "do the sauce"
+        self.parent.parent.sauce.location='on_stone'
+    def do_pepperoni(self):     
+        yield 2
+        print "do the pepperoni"
+        self.parent.parent.pepperoni.location='on_stone'
+    def do_mozzarella(self):     
+        yield 2
+        print "do the mozzarella"
+        self.parent.parent.mozzarella.location='on_stone'
+
+    def change_state(self, env_object, slot_value, k):
+
+        yield k
+        x = eval('self.parent.parent.' + env_object)
+        x.state = slot_value
+        print env_object
+        print slot_value
+ 
+    def change_xx(self, env_object, slot_value, k):
+
+        yield k
+        x = eval('self.parent.parent.' + env_object)
+        x.xx = slot_value
+        print env_object
+        print slot_value
+
+    def change_yy(self, env_object, slot_value, k):
+
+        yield k
+        x = eval('self.parent.parent.' + env_object)
+        x.yy = slot_value
+        print env_object
+        print slot_value
+        
+class MyAgent(ACTR):    
+    focus=Buffer()
+    motor=MotorModule()
+
+    def init():
+        focus.set('pizza crust')
+
+    def crust(focus='pizza crust'):
+        print "I have a pizza crust"     
+        focus.set('pizza sauce')
+        motor.do_crust()                 
+
+    def sauce(focus='pizza sauce', crust='location:on_stone'):  
+        print "I have sauce"                         
+        focus.set('pizza pepperoni')                                    
+        motor.do_sauce()                                            
+
+    def stop_production(mario_voice='state:finished'):               
+        print "gino - we are done"
+        target="gino_location"
+        motor.change_state(target, "home", 2)
+         
+
+class MyAgent2(ACTR):    
+    focus=Buffer()
+    motor=MotorModule()
+ 
+    def init():
+        focus.set('pepperoni')
+
+    def pepperoni(focus='pizza pepperoni', sauce='location:on_stone'):       
+        print "I have pepperoni"
+        focus.set('pizza mozzarella')
+        motor.do_pepperoni()
+
+    def mozzarella(focus='pizza mozzarella', pepperoni='location:on_stone'):
+        print "I have mozzarella"
+        focus.set('stop')
+        motor.do_mozzarella()
+
+    def finished(focus='finished', mozzarella='location:on_stone'):
+        print "mario - we have made a pepperoni pizza"
+        print "mario - finished"
+        focus.set('stop')
+ 
+        target="mario_voice"
+        motor.change_state(target, "finished", 1)
+
+gino=MyAgent()
+mario=MyAgent2()
+env=Pizzeria()
+env.agent=gino
+env.agent=mario
+
+ccm.log_everything(env)
+
+env.run()
+ccm.finished()
