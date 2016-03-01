@@ -17,17 +17,17 @@ class MyAgent(ACTR):
         print "I have a pizza crust"
         focus.set('goal:pizza object:sauce')
 
-    def sauce(focus='goal:pizza object:sauce'):
-        print "I have put tomato sauce on the crust"
-        focus.set('goal:pizza object:pepperoni')
+    def sauce(focus='goal:pizza object:sauce'):          
+        print "I have put tomato sauce on the crust"                
+        focus.set('goal:pizza object:peppers')
 
-    def pepperoni(focus='goal:pizza objet:pepperoni'):
-        print "I have put pepperoni on the tomato sauce"
+    def peppers(focus='goal:pizza object:peppers'):
+        print "I have put peppers on the sauce"
         focus.set('goal:pizza object:mozzarella')
 
     def mozzarella(focus='goal:pizza object:mozzarella'):
-        print "I have put mozzarella on the pepperoni"
-        print "I have made a pepperoni pizza"
+        print "I have put mozzarella on the peppers"
+        print "I have made a delicious pizza"
         focus.set('goal:stop')
 
     def stop_production(focus='goal:stop'):
