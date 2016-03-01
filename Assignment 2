@@ -37,13 +37,13 @@ class MyAgent(ACTR):
         focus.set('pizza topping')    
 
     def order(focus='pizza topping', DMbuffer='topping:?topping'):
-	print "I recall they wanted......."                                 
+        print "I recall they wanted......."                                 
         print topping             
-        print "i have put the topping on the pizza"
-        focus.set('cheese')
+        print "I have put the topping on the pizza"
+        focus.set('mozzarella')
 
-    def cheese(focus='cheese'):
-        print "I have put the cheese on the pizza"
+    def mozzarella(focus='mozzarella'):
+        print "I have put the mozzarella on the pizza"
         print "I have made a pepperoni pizza"
         focus.set('stop')   
 
