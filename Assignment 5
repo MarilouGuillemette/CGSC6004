@@ -1,0 +1,73 @@
+import ccm      
+log=ccm.log()   
+
+from ccm.lib.actr import *  
+
+class Pizzeria(ccm.Model):        
+    crust=ccm.Model(isa='crust',location='on_table')
+    tomato_sauce=ccm.Model(isa='tomato_sauce',location='on_table')
+    pepperoni=ccm.Model(isa='pepperoni',location='on_table')
+    mozzarella=ccm.Model(isa='mozzarella',location='on_table')
+
+class MyAgent(ACTR):
+    focus=Buffer()
+
+    DMbuffer=Buffer()                   
+    DM=Memory(DMbuffer,latency=0.05,threshold=1)     
+                                                     
+            
+    dm_n=DMNoise(DM,noise=0.0,baseNoise=0.0)         
+    dm_bl=DMBaseLevel(DM,decay=0.5,limit=None)       
+
+
+    dm_spread=DMSpreading(DM,focus)                  
+    dm_spread.strength=2                             
+    dm_spread.weight[focus]=.5                       
+
+
+    def init():
+        DM.add('customer:customer herbs:basil')
+        focus.set('pizza crust')
+        
+    def crust(focus='pizza crust'):
+        print "I have a pizza crust"     
+        focus.set('pizza tomato sauce')                
+
+    def tomato_sauce(focus='pizza tomato sauce'):  
+        print "I have tomato sauce"
+        focus.set('pizza pepperoni')                                    
+
+    def pepperoni(focus='pizza pepperoni'):       
+        print "I have pepperoni"
+        focus.set('pizza mozzarella')
+
+    def mozzarella(focus='pizza mozzarella'):
+        print "I have mozzarella"
+        focus.set('customer herbs')         
+                                        
+    def herbs(focus='customer herbs'):
+        print "recalling the order"
+        DM.request('customer:customer herbs:?herbs')                
+        focus.set('pizza herbs') 
+
+    def order(focus='pizza herb', DMbuffer='customer:customer herbs:?herbs'):  
+        print "I recall they wanted......."         
+        print herbs            
+        print "i have put the herbs on the pizza"
+        focus.set('stop')
+
+    def forgot(focus='pizza herbs', DMbuffer=None, DM='error:True'):
+        print "I recall they wanted......."
+        print "I forgot"
+        focus.set('stop')              
+
+    def stop_production(focus='stop'):
+        self.stop()
+
+gino=MyAgent()
+env=Pizzeria()
+env.agent=gino
+ccm.log_everything(env)
+
+env.run()                              
+ccm.finished() 
