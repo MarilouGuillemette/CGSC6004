@@ -3,11 +3,8 @@ log=ccm.log()
 
 from ccm.lib.actr import *  
 
-class Pizzeria(ccm.Model):        
-    crust=ccm.Model(isa='crust',location='on_table')
-    tomato_sauce=ccm.Model(isa='tomato_sauce',location='on_table')
-    pepperoni=ccm.Model(isa='pepperoni',location='on_table')
-    mozzarella=ccm.Model(isa='mozzarella',location='on_table')
+class Pizzeria(ccm.Model):
+    pass
 
 class MyAgent(ACTR):
     focus=Buffer()
@@ -26,37 +23,37 @@ class MyAgent(ACTR):
 
 
     def init():
-        DM.add('customer:customer herbs:basil')
-        focus.set('pizza crust')
+        DM.add('customer:mario herbs:basil')
+        focus.set('crust')
         
-    def crust(focus='pizza crust'):
+    def crust(focus='crust'):
         print "I have a pizza crust"     
-        focus.set('pizza tomato sauce')                
+        focus.set('tomato sauce')                
 
-    def tomato_sauce(focus='pizza tomato sauce'):  
+    def tomato_sauce(focus='tomato sauce'):  
         print "I have tomato sauce"
-        focus.set('pizza pepperoni')                                    
+        focus.set('pepperoni')                                    
 
-    def pepperoni(focus='pizza pepperoni'):       
+    def pepperoni(focus='pepperoni'):       
         print "I have pepperoni"
-        focus.set('pizza mozzarella')
+        focus.set('mozzarella')
 
-    def mozzarella(focus='pizza mozzarella'):
+    def mozzarella(focus='mozzarella'):
         print "I have mozzarella"
         focus.set('customer herbs')         
                                         
     def herbs(focus='customer herbs'):
         print "recalling the order"
-        DM.request('customer:customer herbs:?herbs')                
-        focus.set('pizza herbs') 
+        DM.request('customer:mario herbs:?herbs')                
+        focus.set('herbs') 
 
-    def order(focus='pizza herb', DMbuffer='customer:customer herbs:?herbs'):  
+    def order(focus='herbs', DMbuffer='customer:mario herbs:?herbs'):  
         print "I recall they wanted......."         
         print herbs            
         print "i have put the herbs on the pizza"
         focus.set('stop')
 
-    def forgot(focus='pizza herbs', DMbuffer=None, DM='error:True'):
+    def forgot(focus='herbs', DMbuffer=None, DM='error:True'):
         print "I recall they wanted......."
         print "I forgot"
         focus.set('stop')              
