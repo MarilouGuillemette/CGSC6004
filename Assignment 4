@@ -19,7 +19,7 @@ class MotorModule(ccm.Model):
         self.parent.parent.crust.location='on_stone'
     def do_sauce(self):     
         yield 2                   
-        print "do the sauce"
+        print "do the tomato sauce"
         self.parent.parent.sauce.location='on_stone'
     def do_pepperoni(self):     
         yield 2
@@ -31,7 +31,6 @@ class MotorModule(ccm.Model):
         self.parent.parent.mozzarella.location='on_stone'
 
     def change_state(self, env_object, slot_value, k):
-
         yield k
         x = eval('self.parent.parent.' + env_object)
         x.state = slot_value
@@ -39,7 +38,6 @@ class MotorModule(ccm.Model):
         print slot_value
  
     def change_xx(self, env_object, slot_value, k):
-
         yield k
         x = eval('self.parent.parent.' + env_object)
         x.xx = slot_value
@@ -59,22 +57,24 @@ class MyAgent(ACTR):
     motor=MotorModule()
 
     def init():
-        focus.set('pizza crust')
+        focus.set('crust')
 
-    def crust(focus='pizza crust'):
-        print "I have a pizza crust"     
-        focus.set('pizza sauce')
+    def crust(focus='crust'):
+        print "gino - I have a pizza crust"     
+        focus.set('sauce')
         motor.do_crust()                 
 
-    def sauce(focus='pizza sauce', crust='location:on_stone'):  
-        print "I have sauce"                         
-        focus.set('pizza pepperoni')                                    
+    def sauce(focus='sauce', crust='location:on_stone'):  
+        print "gino - I have tomato sauce"
+        focus.set('pepperoni')
         motor.do_sauce()                                            
 
     def stop_production(mario_voice='state:finished'):               
         print "gino - we are done"
         target="gino_location"
         motor.change_state(target, "home", 2)
+
+        self.stop()
          
 
 class MyAgent2(ACTR):    
@@ -84,14 +84,14 @@ class MyAgent2(ACTR):
     def init():
         focus.set('pepperoni')
 
-    def pepperoni(focus='pizza pepperoni', sauce='location:on_stone'):       
-        print "I have pepperoni"
-        focus.set('pizza mozzarella')
+    def pepperoni(focus='pepperoni', sauce='location:on_stone'):       
+        print "mario - I have pepperoni"
+        focus.set('mozzarella')
         motor.do_pepperoni()
 
-    def mozzarella(focus='pizza mozzarella', pepperoni='location:on_stone'):
-        print "I have mozzarella"
-        focus.set('stop')
+    def mozzarella(focus='mozzarella', pepperoni='location:on_stone'):
+        print "mario - I have mozzarella"
+        focus.set('finished')
         motor.do_mozzarella()
 
     def finished(focus='finished', mozzarella='location:on_stone'):
