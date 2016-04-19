@@ -1,0 +1,76 @@
+import ccm      
+log=ccm.log()   
+
+from ccm.lib.actr import *
+
+class Morphology(ccm.Model):
+    pass
+
+class Speaker(ACTR):
+    focus=Buffer()
+    DMbuffer=Buffer()                   
+    DM=Memory(DMbuffer, threshold=0)
+
+    VMbuffer=Buffer()
+    VM=Memory(VMbuffer, threshold=0)
+
+                                                     
+##    def init():
+##        DM.add('prefix:fuck prefix:fucking')
+##        focus.set('trigger')
+##
+##    def anger(focus='anger'):
+##        DM.request('anger_prefix:?')
+##        print DM.request
+
+    
+    def init():
+        focus.set('get_triggered')
+
+    def get_triggered(focus='get_triggered'):
+        trigger= raw_input("An event triggers an emotion in the agent. Which emotion does it trigger: anger, surprise, or confusion?")
+        focus.set('trigger_'+trigger)
+        
+
+    def trigger_anger(focus='trigger_anger'):
+        DM.add('emote:Fucking')
+        DM.add('emote:Fuck')
+        VM.add('valence:!')
+        DM.request('emote:?')
+        VM.request('valence:?')
+        focus.set('declare_emotion')
+
+    def trigger_confusion(focus='trigger_confusion'):
+        DM.add('emote:What_the')
+        DM.add('emote:Like')
+        VM.add('valence:!?')
+        DM.request('emote:?')
+        VM.request('valence:?')
+        focus.set('declare_emotion')
+
+    def trigger_surprise(focus='trigger_surprise'):
+        DM.add('emote:Holy')
+        DM.add('emote:Jesus')
+        VM.add('valence:!')
+        DM.request('emote:?')
+        VM.request('valence:?')
+        focus.set('declare_emotion')
+
+
+    def declare_emotion(focus='declare_emotion', DMbuffer='emote:?emote', VMbuffer='valence:?valence'):
+        print emote+" fuck"+ valence
+        focus.set('stop')
+
+
+    def stop_production(focus='stop'):
+        self.stop()       
+
+
+George=Speaker()
+env=Morphology()
+env.speaker=George
+ccm.log_everything(env)
+
+env.run()                              
+ccm.finished() 
+
