@@ -14,15 +14,10 @@ class Speaker(ACTR):
     VMbuffer=Buffer()
     VM=Memory(VMbuffer, threshold=0)
 
-                                                     
-##    def init():
-##        DM.add('prefix:fuck prefix:fucking')
-##        focus.set('trigger')
-##
-##    def anger(focus='anger'):
-##        DM.request('anger_prefix:?')
-##        print DM.request
-
+##    Needs user input. Answer with anger, surprise or confusion.
+##    This user input is a representation of an intention, in this case an emotion.
+##    The theoritical implication of the valence module is that it is theorized that the valence of the phrase is carried by the prefix.
+##    The valence of a phrase is either exclamative or interrogative.
     
     def init():
         focus.set('get_triggered')
